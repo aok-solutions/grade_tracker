@@ -6,6 +6,7 @@ menu_prompt = "\nwould you like to: \n1) add student \n2) add assignment \n3) li
 puts "welcome to the student grade tracker"
 puts menu_prompt
 
+Assignment = Struct.new(:name, :grade, keyword_init: true)
 Student = Struct.new(:name, :assignments, keyword_init: true) do
 	def final_grade
 		return "Incomplete" if assignments.size == 0
@@ -30,7 +31,7 @@ def letter_grade(grade)
 		"B"
 	elsif number_grade >= 70
 		"C"
-	elseif number_grade >= 60
+	elsif number_grade >= 60
 		"D"
 	else
 		"F"
@@ -62,7 +63,20 @@ while (user_input = gets.chomp) != "4"
 		list_students(student_list)
 	when "2"
 		puts newline
-		puts "todo: enter assignment"
+		puts "enter student name"
+		student_input = gets.chomp
+		puts "enter assignment name"
+		assignment_input = gets.chomp
+		puts "enter assignment grade"
+		grade_input = gets.chomp
+
+		student = student_list.find{ |s| s.name == student_input }
+		if student == nil
+			puts "sorry, that student does not exist in our records...try again!"
+		else
+			student.assignments << Assignment.new(name: assignment_input, grade: grade_input)
+			list_students(student_list)
+		end
 	when "3"
 		list_students(student_list)
 	else
