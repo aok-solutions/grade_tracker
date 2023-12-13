@@ -6,11 +6,39 @@ menu_prompt = "\nwould you like to: \n1) add student \n2) add assignment \n3) li
 puts "welcome to the student grade tracker"
 puts menu_prompt
 
-Student = Struct.new(:name, :assignments, :final_grade, keyword_init: true)
+Student = Struct.new(:name, :assignments, keyword_init: true) do
+	def final_grade
+		return "Incomplete" if assignments.size == 0
+
+		grade = assignments.reduce(0) do |sum, assignment|
+			sum + assignment.grade.to_i
+		end
+
+		average_grade = grade / assignments.size
+		letter_grade(average_grade)
+	end
+end
+
 student_list = []
 
+def letter_grade(grade)
+	number_grade = grade.to_i
+
+	if number_grade >= 90
+		"A"
+	elsif number_grade >= 80
+		"B"
+	elsif number_grade >= 70
+		"C"
+	elseif number_grade >= 60
+		"D"
+	else
+		"F"
+	end
+end
+
 def add_student(name, students)
-	students << Student.new(name: name, assignments: [], final_grade: "Incomplete")
+	students << Student.new(name: name, assignments: [])
 end
 
 def list_students(students)
