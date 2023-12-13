@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
 newline = "\n"
-menu_prompt = "\nwould you like to: \n1) add student \n2) add assignment \n3) list students \n4) exit\n"
+menu_prompt = "\nwould you like to: \n1) add student \n2) add assignment \n3) list students \n4) list grades for a student \n5) exit\n"
 
 puts "welcome to the student grade tracker"
 puts menu_prompt
@@ -19,8 +19,6 @@ Student = Struct.new(:name, :assignments, keyword_init: true) do
 		letter_grade(average_grade)
 	end
 end
-
-student_list = []
 
 def letter_grade(grade)
 	number_grade = grade.to_i
@@ -48,12 +46,23 @@ def list_students(students)
 		puts "\n"
 		puts student.name
 		puts "Final Grade: #{student.final_grade}"
-		puts "\n"
 		puts "------------"
 	end
 end
 
-while (user_input = gets.chomp) != "4"
+def list_grades(student)
+	puts "\n"
+	student.assignments.each do |assignment|
+		puts "#{assignment.name}: #{assignment.grade}"
+	end
+
+	puts "Final Grade: #{student.final_grade}"
+	puts "------------"
+end
+
+student_list = []
+
+while (user_input = gets.chomp) != "5"
 	case user_input
 	when "1"
 		puts newline
@@ -79,6 +88,17 @@ while (user_input = gets.chomp) != "4"
 		end
 	when "3"
 		list_students(student_list)
+	when "4"
+		puts newline
+		puts "enter student name"
+		student_input = gets.chomp
+
+		student = student_list.find{ |s| s.name == student_input }
+		if student == nil
+			puts "sorry, that student does not exist in our records...try again!"
+		else
+			list_grades(student)
+		end
 	else
 		puts newline
 		puts "invalid input"
